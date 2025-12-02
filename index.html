@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario  - Sistema de Caja y Gestión</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Firebase FIRST -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            updateDoc, 
+            deleteDoc, 
+            doc, 
+            setDoc,  
+            onSnapshot,
+            serverTimestamp,
+            getDocs  
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfhYmkRLhQ7cMDyYjNue_XcunaAj4pz30",  
+            authDomain: "inventario-fbacc.firebaseapp.com",      
+            projectId: "inventario-fbacc",                       
+            storageBucket: "inventario-fbacc.firebasestorage.app", 
+            messagingSenderId: "860151342286",                   
+            appId: "1:860151342286:web:bc585f2cfbb7d5f056dc9f",  
+            measurementId: "G-XXXXXXXXXX" 
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        // Exportar todo globalmente
+        window.firebaseApp = app;
+        window.firebaseDb = db;
+        window.firebaseAuth = auth;
+        window.firebaseFirestore = {
+            collection, 
+            addDoc, 
+            updateDoc, 
+            deleteDoc, 
+            doc, 
+            setDoc,  
+            onSnapshot,
+            serverTimestamp,
+            getDocs 
+        };
+        window.firebaseAuthFunctions = {
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged
+        };
+
+        console.log('✅ Firebase configurado correctamente con NUEVO proyecto');
+        console.log('📊 Firestore functions disponibles:', Object.keys(window.firebaseFirestore));
+        console.log('🔑 Proyecto:', firebaseConfig.projectId);
+    </script>
+    
+    <!-- Luego las demás librerías -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script src="https://unpkg.com/lucide@1.25.0/dist/umd/lucide.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <!-- Inicializar EmailJS -->
+    <script>
+        (function() {
+            emailjs.init({
+                publicKey: "PRrUpbqoncDf1cu03",
+                blockHeadless: true,
+                limitRate: {
+                    id: 'app',
+                    throttle: 1000 
+                }
+            });
+            console.log('✅ EmailJS inicializado');
+        })();
+    </script>
+    
+    <!-- Agregar estilos CSS para iconos -->
+    <style>
+        /* Estilos para animaciones */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slide-in-right {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out;
+        }
+        
+        .animate-slide-in-right {
+            animation: slide-in-right 0.3s ease-out;
+        }
+        
+        /* Ocultar scrollbar pero mantener funcionalidad */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Estilos para iconos Lucide */
+        .lucide {
+            stroke-width: 1.5;
+            stroke: currentColor;
+            fill: none;
+        }
+        
+        /* Efectos hover */
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" src="app.js"></script>
+    
+    <!-- Script para inicializar Lucide después de que la app se cargue -->
+    <script>
+        // Esperar a que la app de React se cargue
+        setTimeout(() => {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                // Inicializar todos los iconos Lucide
+                window.lucide.createIcons();
+                console.log('✅ Iconos Lucide inicializados');
+            }
+        }, 1000);
+        
+        // También inicializar cuando haya cambios en el DOM
+        const observer = new MutationObserver(() => {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        });
+        
+        observer.observe(document.body, { 
+            childList: true, 
+            subtree: true 
+        });
+    </script>
+</body>
+</html>
